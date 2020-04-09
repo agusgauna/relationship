@@ -1,4 +1,15 @@
 package ar.com.ada.sb.relationship.model.mapper;
 
-public interface DataMapper {
+import ar.com.ada.sb.relationship.model.entity.Actor;
+
+import java.util.List;
+
+public interface DataMapper<E,D> {
+    E toEntity(D dto);
+    D toDto(E entity);
+
+    List<E> toEntity(List<D> dtoList);
+    List<D> toDto(List<E> entityList);
+
+
 }

@@ -38,4 +38,13 @@ public class Film {
             inverseJoinColumns = @JoinColumn(name = "Actor_id"))
     private Set<Actor> actors;
 
+    public Film(Long id) {
+        this.id = id;
+    }
+
+    public Film(String title, String description, Date year) {
+        this.title = title;
+        this.description = description;
+        this.year = year;
+    }
 }
