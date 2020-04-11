@@ -1,7 +1,5 @@
 package ar.com.ada.sb.relationship.component.data;
 
--package ar.com.ada.sb.relationship.component.data;-
-
 import ar.com.ada.sb.relationship.model.entity.Actor;
 import ar.com.ada.sb.relationship.model.repository.ActorRepository;
 import org.springframework.beans.factory.annotation.Autowired;

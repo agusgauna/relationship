@@ -1,14 +1,12 @@
 package ar.com.ada.sb.relationship.services;
 
-import ar.com.ada.sb.relationship.exception.ApiEntityError;
-import ar.com.ada.sb.relationship.exception.BusinessLogicException;
+import ar.com.ada.sb.relationship.component.BusinessLogicExceptionComponent;
 import ar.com.ada.sb.relationship.model.dto.FilmDto;
 import ar.com.ada.sb.relationship.model.entity.Film;
 import ar.com.ada.sb.relationship.model.mapper.FilmMapper;
 import ar.com.ada.sb.relationship.model.repository.FilmRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
-import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -16,6 +14,9 @@ import java.util.Optional;
 
 @Service ("filmServices")
 public class FilmServices implements Services<FilmDto> {
+
+    @Autowired @Qualifier("businessLogicExceptionComponent")
+    private BusinessLogicExceptionComponent logicExceptionComponent;
 
     @Autowired @Qualifier("filmRepository")
     private FilmRepository filmRepository;
@@ -42,7 +43,7 @@ public class FilmServices implements Services<FilmDto> {
             Film filmById = byIdOptional.get();
             filmDto = filmMapper.toDto(filmById);
         } else {
-            throwBusinessLogicException(id);
+            logicExceptionComponent.throwExceptionEntityNotFound("Film", id);
         }
         return filmDto;
     }
@@ -67,7 +68,7 @@ public class FilmServices implements Services<FilmDto> {
             filmDtoUpdated = filmMapper.toDto(filmUpdated);
 
         } else {
-            throwBusinessLogicException(id);
+            logicExceptionComponent.throwExceptionEntityNotFound("Film", id);
         }
         return filmDtoUpdated;
     }
@@ -79,19 +80,7 @@ public class FilmServices implements Services<FilmDto> {
             Film filmToDelete = byIdOptional.get();
             filmRepository.delete(filmToDelete);
         }  else {
-            throwBusinessLogicException(id);
+            logicExceptionComponent.throwExceptionEntityNotFound("Film", id);
         }
-    }
-    private void throwBusinessLogicException(Long id) {
-        ApiEntityError apiEntityError = new ApiEntityError(
-                "Film",
-                "NotFound",
-                "The Film with id " + id + "does not exist"
-        );
-        throw new BusinessLogicException(
-                "The film not exist",
-                HttpStatus.NOT_FOUND,
-                apiEntityError
-        );
     }
 }

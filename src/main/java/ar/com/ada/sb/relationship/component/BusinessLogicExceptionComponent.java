@@ -14,7 +14,7 @@ public class BusinessLogicExceptionComponent {
                 "The actor with id " + id + "does not exist"
         );
         throw new BusinessLogicException(
-                "actor not exist",
+                entityName + "not exist",
                 HttpStatus.NOT_FOUND,
                 apiEntityError
         );

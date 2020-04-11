@@ -1,14 +1,12 @@
 package ar.com.ada.sb.relationship.services;
 
-import ar.com.ada.sb.relationship.exception.ApiEntityError;
-import ar.com.ada.sb.relationship.exception.BusinessLogicException;
+import ar.com.ada.sb.relationship.component.BusinessLogicExceptionComponent;
 import ar.com.ada.sb.relationship.model.dto.ActorDto;
 import ar.com.ada.sb.relationship.model.entity.Actor;
 import ar.com.ada.sb.relationship.model.mapper.ActorMapper;
 import ar.com.ada.sb.relationship.model.repository.ActorRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
-import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -16,6 +14,9 @@ import java.util.Optional;
 
 @Service("actorServices")
 public class ActorServices implements Services<ActorDto>{
+
+    @Autowired @Qualifier("businessLogicExceptionComponent")
+    private BusinessLogicExceptionComponent logicExceptionComponent;
 
     @Autowired @Qualifier("actorRepository")
     private ActorRepository actorRepository;
@@ -42,7 +43,7 @@ public class ActorServices implements Services<ActorDto>{
             Actor actorById = byIdOptional.get();
             actorDto = actorMapper.toDto(actorById);
         } else {
-            throwBusinessLogicException(id);
+            logicExceptionComponent.throwExceptionEntityNotFound("Actor", id);
         }
         return actorDto;
     }
@@ -67,7 +68,7 @@ public class ActorServices implements Services<ActorDto>{
             actorDtoUpdated = actorMapper.toDto(actorUpdated);
 
         } else {
-            throwBusinessLogicException(id);
+            logicExceptionComponent.throwExceptionEntityNotFound("Actor", id);
         }
         return actorDtoUpdated;
     }
@@ -79,19 +80,8 @@ public class ActorServices implements Services<ActorDto>{
             Actor actorToDelete = byIdOptional.get();
             actorRepository.delete(actorToDelete);
         }  else {
-            throwBusinessLogicException(id);
+            logicExceptionComponent.throwExceptionEntityNotFound("Actor", id);
         }
     }
-    private void throwBusinessLogicException(Long id) {
-        ApiEntityError apiEntityError = new ApiEntityError(
-                "Actor",
-                "NotFound",
-                "The actor with id " + id + "does not exist"
-        );
-        throw new BusinessLogicException(
-                "actor not exist",
-                HttpStatus.NOT_FOUND,
-                apiEntityError
-        );
-    }
+
 }

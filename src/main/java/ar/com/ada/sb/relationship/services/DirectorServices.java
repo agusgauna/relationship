@@ -1,14 +1,12 @@
 package ar.com.ada.sb.relationship.services;
 
-import ar.com.ada.sb.relationship.exception.ApiEntityError;
-import ar.com.ada.sb.relationship.exception.BusinessLogicException;
+import ar.com.ada.sb.relationship.component.BusinessLogicExceptionComponent;
 import ar.com.ada.sb.relationship.model.dto.DirectorDto;
 import ar.com.ada.sb.relationship.model.entity.Director;
 import ar.com.ada.sb.relationship.model.mapper.DirectorMapper;
 import ar.com.ada.sb.relationship.model.repository.DirectorRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
-import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -16,6 +14,9 @@ import java.util.Optional;
 
 @Service ("directorServices")
 public class DirectorServices implements Services<DirectorDto>{
+
+    @Autowired @Qualifier("businessLogicExceptionComponent")
+    private BusinessLogicExceptionComponent logicExceptionComponent;
 
     @Autowired @Qualifier("actorRepository")
     private DirectorRepository directorRepository;
@@ -42,7 +43,7 @@ public class DirectorServices implements Services<DirectorDto>{
             Director directorById = byIdOptional.get();
             directorDto = directorMapper.toDto(directorById);
         } else {
-            throwBusinessLogicException(id);
+            logicExceptionComponent.throwExceptionEntityNotFound("Director", id);
         }
         return directorDto;
     }
@@ -67,7 +68,7 @@ public class DirectorServices implements Services<DirectorDto>{
             directorDtoUpdated = directorMapper.toDto(directorUpdated);
 
         } else {
-            throwBusinessLogicException(id);
+            logicExceptionComponent.throwExceptionEntityNotFound("Director", id);
         }
         return directorDtoUpdated;
     }
@@ -79,19 +80,7 @@ public class DirectorServices implements Services<DirectorDto>{
             Director directorToDelete = byIdOptional.get();
             directorRepository.delete(directorToDelete);
         }  else {
-            throwBusinessLogicException(id);
+            logicExceptionComponent.throwExceptionEntityNotFound("Director", id);
         }
-    }
-    private void throwBusinessLogicException(Long id) {
-        ApiEntityError apiEntityError = new ApiEntityError(
-                "Director",
-                "NotFound",
-                "The director with id " + id + "does not exist"
-        );
-        throw new BusinessLogicException(
-                "The director not exist",
-                HttpStatus.NOT_FOUND,
-                apiEntityError
-        );
     }
 }
