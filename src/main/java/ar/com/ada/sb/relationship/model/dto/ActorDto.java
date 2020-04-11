@@ -1,6 +1,7 @@
 package ar.com.ada.sb.relationship.model.dto;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -30,7 +31,7 @@ public class ActorDto implements Serializable {
     @JsonFormat(pattern = "yyyy-MM-dd")
     private LocalDate birthday;
 
-    //Set para validar una sola vez ese actor, que no este repetido
+    @JsonIgnoreProperties(value = "actors")
     private Set<FilmDto> films;
 
     public ActorDto(Long id, String name, String gender, LocalDate birthday, Set<FilmDto> films) {

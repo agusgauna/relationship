@@ -1,7 +1,5 @@
 package ar.com.ada.sb.relationship.model.mapper;
 
-import ar.com.ada.sb.relationship.model.entity.Actor;
-
 import java.util.List;
 
 public interface DataMapper<E,D> {
