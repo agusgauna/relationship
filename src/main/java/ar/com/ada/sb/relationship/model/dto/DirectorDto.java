@@ -1,11 +1,13 @@
 package ar.com.ada.sb.relationship.model.dto;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import javax.validation.constraints.NotBlank;
 import java.io.Serializable;
+import java.util.List;
 import java.util.Set;
 
 @Getter
@@ -20,18 +22,7 @@ public class DirectorDto implements Serializable {
     @NotBlank( message = "bio is required")
     private String bio;
 
-    private Set<FilmDto> films;
+    @JsonIgnoreProperties(value = "director")
+    private List<FilmDto> films;
 
-    public DirectorDto(Long id, String name, String bio, Set<FilmDto> films) {
-        this.id = id;
-        this.name = name;
-        this.bio = bio;
-        this.films = films;
-    }
-
-    public DirectorDto(String name, String bio, Set<FilmDto> films) {
-        this.name = name;
-        this.bio = bio;
-        this.films = films;
-    }
 }

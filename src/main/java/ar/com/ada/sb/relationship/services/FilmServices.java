@@ -5,10 +5,12 @@ import ar.com.ada.sb.relationship.exception.ApiEntityError;
 import ar.com.ada.sb.relationship.exception.BusinessLogicException;
 import ar.com.ada.sb.relationship.model.dto.FilmDto;
 import ar.com.ada.sb.relationship.model.entity.Actor;
+import ar.com.ada.sb.relationship.model.entity.Director;
 import ar.com.ada.sb.relationship.model.entity.Film;
 import ar.com.ada.sb.relationship.model.mapper.circular.dependency.CycleAvoidingMappingContext;
 import ar.com.ada.sb.relationship.model.mapper.circular.dependency.FilmCycleMapper;
 import ar.com.ada.sb.relationship.model.repository.ActorRepository;
+import ar.com.ada.sb.relationship.model.repository.DirectorRepository;
 import ar.com.ada.sb.relationship.model.repository.FilmRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
@@ -29,6 +31,9 @@ public class FilmServices implements Services<FilmDto> {
 
     @Autowired @Qualifier("actorRepository")
     private ActorRepository actorRepository;
+
+    @Autowired @Qualifier("directorRepository")
+    private DirectorRepository directorRepository;
 
     private FilmCycleMapper filmCycleMapper = FilmCycleMapper.MAPPER;
 
@@ -127,4 +132,26 @@ public class FilmServices implements Services<FilmDto> {
         }
         return filmDtoWithNewActor;
     }
+
+    public FilmDto addDirectorToFilm(Long directorId, Long filmId) {
+        Optional<Film> filmByIdOptional = filmRepository.findById(filmId);
+        Optional<Director> directorByIdOptional = directorRepository.findById(directorId);
+        FilmDto filmDtoWithDirector = null;
+
+        if (!filmByIdOptional.isPresent())
+            logicExceptionComponent.throwExceptionEntityNotFound("Film",filmId);
+        if (!directorByIdOptional.isPresent())
+            logicExceptionComponent.throwExceptionEntityNotFound("Director",directorId);
+
+        Film film = filmByIdOptional.get();
+        Director directorToSet = directorByIdOptional.get();
+
+        film.setDirector(directorToSet);
+        Film filmWithDirector = filmRepository.save(film);
+        filmDtoWithDirector = filmCycleMapper.toDto(filmWithDirector, context);
+
+        return filmDtoWithDirector;
+    }
+
+
 }

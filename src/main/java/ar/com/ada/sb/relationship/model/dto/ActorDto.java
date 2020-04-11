@@ -11,7 +11,6 @@ import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Past;
 import java.io.Serializable;
 import java.time.LocalDate;
-import java.util.Date;
 import java.util.Set;
 
 @Getter
@@ -48,5 +47,4 @@ public class ActorDto implements Serializable {
         this.birthday = birthday;
         this.films = films;
     }
-
 }
