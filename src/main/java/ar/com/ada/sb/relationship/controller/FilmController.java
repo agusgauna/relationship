@@ -46,4 +46,9 @@ public class FilmController {
         filmServices.delete(id);
         return ResponseEntity.noContent().build();
     }
+    @PutMapping({"{filmId}/actors/{actorId}","{filmId}/actors/{actorId}/"})
+    public ResponseEntity addActorToFilm(@PathVariable Long filmId, @PathVariable Long actorId) {
+        FilmDto filmDtoWithNewActor = filmServices.addActorToFilm(actorId, filmId);
+        return ResponseEntity.ok(filmDtoWithNewActor);
+    }
 }

@@ -5,7 +5,6 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import javax.persistence.*;
-import java.util.Date;
 import java.util.Set;
 
 
@@ -25,9 +24,6 @@ public class Film {
     @Column(nullable = false, columnDefinition = "LONGTEXT")
     private String description;
 
-    @Column(nullable = false, columnDefinition = "YEAR")
-    private Date year;
-
     @ManyToOne
     @JoinColumn(name = "Director_id", nullable = false)
     private Director director;
@@ -42,9 +38,11 @@ public class Film {
         this.id = id;
     }
 
-    public Film(String title, String description, Date year) {
+    public Film(String title, String description) {
         this.title = title;
         this.description = description;
-        this.year = year;
+    }
+    public void addActor(Actor actor){
+        this.actors.add(actor);
     }
 }

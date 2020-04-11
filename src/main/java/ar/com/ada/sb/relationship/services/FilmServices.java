@@ -1,12 +1,17 @@
 package ar.com.ada.sb.relationship.services;
 
 import ar.com.ada.sb.relationship.component.BusinessLogicExceptionComponent;
+import ar.com.ada.sb.relationship.exception.ApiEntityError;
+import ar.com.ada.sb.relationship.exception.BusinessLogicException;
 import ar.com.ada.sb.relationship.model.dto.FilmDto;
+import ar.com.ada.sb.relationship.model.entity.Actor;
 import ar.com.ada.sb.relationship.model.entity.Film;
 import ar.com.ada.sb.relationship.model.mapper.FilmMapper;
+import ar.com.ada.sb.relationship.model.repository.ActorRepository;
 import ar.com.ada.sb.relationship.model.repository.FilmRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -20,6 +25,9 @@ public class FilmServices implements Services<FilmDto> {
 
     @Autowired @Qualifier("filmRepository")
     private FilmRepository filmRepository;
+
+    @Autowired @Qualifier("actorRepository")
+    private ActorRepository actorRepository;
 
     private FilmMapper filmMapper;
 
@@ -82,5 +90,41 @@ public class FilmServices implements Services<FilmDto> {
         }  else {
             logicExceptionComponent.throwExceptionEntityNotFound("Film", id);
         }
+    }
+
+    public FilmDto addActorToFilm(Long actorId, Long filmId) {
+        Optional<Film> filmByIdOptional = filmRepository.findById(filmId);
+        Optional<Actor> actorByIdOptional = actorRepository.findById(actorId);
+        FilmDto filmDtoWithNewActor = null;
+
+        if (!filmByIdOptional.isPresent())
+            logicExceptionComponent.throwExceptionEntityNotFound("Film",filmId);
+        if (!actorByIdOptional.isPresent())
+            logicExceptionComponent.throwExceptionEntityNotFound("Actor",actorId);
+
+        Film film = filmByIdOptional.get();
+        Actor actorToAdd = actorByIdOptional.get();
+
+        boolean hasActorInFilm = film.getActors()
+                .stream()
+                .anyMatch(actor -> actor.getName().equals(actorToAdd.getName()));
+
+        if (!hasActorInFilm){
+            film.addActor(actorToAdd);
+            Film filmWithNewActor = filmRepository.save(film);
+            filmDtoWithNewActor = filmMapper.toDto(filmWithNewActor);
+        } else {
+            ApiEntityError apiEntityError = new ApiEntityError(
+                    "Actor",
+                    "AlreadyExist",
+                    "The actor with id " + actorId + "already exist in the film"
+            );
+            throw new BusinessLogicException(
+                    "Actor already exist in the film",
+                    HttpStatus.BAD_REQUEST,
+                    apiEntityError
+            );
+        }
+        return filmDtoWithNewActor;
     }
 }
