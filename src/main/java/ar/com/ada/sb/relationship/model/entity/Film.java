@@ -25,7 +25,7 @@ public class Film {
     private String description;
 
     @ManyToOne
-    @JoinColumn(name = "Director_id", nullable = false)
+    @JoinColumn(name = "Director_id", nullable = true)
     private Director director;
 
     @ManyToMany

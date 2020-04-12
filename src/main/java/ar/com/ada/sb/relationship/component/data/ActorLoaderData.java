@@ -20,7 +20,7 @@ public class ActorLoaderData implements ApplicationRunner {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(ActorLoaderData.class);
 
-    @Autowired @Qualifier
+    @Autowired @Qualifier("actorRepository")
     private ActorRepository actorRepository;
 
     @Value("${spring.application.env}")

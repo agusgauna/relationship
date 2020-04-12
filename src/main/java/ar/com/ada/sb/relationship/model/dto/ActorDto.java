@@ -32,19 +32,4 @@ public class ActorDto implements Serializable {
 
     @JsonIgnoreProperties(value = "actors")
     private Set<FilmDto> films;
-
-    public ActorDto(Long id, String name, String gender, LocalDate birthday, Set<FilmDto> films) {
-        this.id = id;
-        this.name = name;
-        this.gender = gender;
-        this.birthday = birthday;
-        this.films = films;
-    }
-
-    public ActorDto(String name, String gender, LocalDate birthday, Set<FilmDto> films) {
-        this.name = name;
-        this.gender = gender;
-        this.birthday = birthday;
-        this.films = films;
-    }
 }

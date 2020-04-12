@@ -19,7 +19,7 @@ public class DirectorServices implements Services<DirectorDto>{
     @Autowired @Qualifier("businessLogicExceptionComponent")
     private BusinessLogicExceptionComponent logicExceptionComponent;
 
-    @Autowired @Qualifier("actorRepository")
+    @Autowired @Qualifier("directorRepository")
     private DirectorRepository directorRepository;
 
     private DirectorCycleMapper directorCycleMapper = DirectorCycleMapper.MAPPER;
